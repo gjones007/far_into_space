@@ -1,0 +1,8 @@
+src/build
+external/libraylib.a
+external/raylib.h
+emsdk
+*.o
+*.a
+ols.json
+*.7z
