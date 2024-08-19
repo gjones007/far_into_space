@@ -4,11 +4,7 @@ import "core:fmt"
 import "core:math"
 import "core:strings"
 
-/////////////WASM
-// import "raylib"
-// import b2 "box2dw"
-/////////////NOT WASM
-import b2 "box2d"
+import b2 "vendor:box2d"
 import "vendor:raylib"
 
 import "core:time"
@@ -167,7 +163,8 @@ ui_loop :: proc(ui: ^Ui, start_offset: int = 0) -> int {
 				0,
 				WHITE,
 			)
-			if key_cooldown == 0 && (input_processed.primary_fire || input_processed.menu_continue) {
+			if key_cooldown == 0 &&
+			   (input_processed.primary_fire || input_processed.menu_continue) {
 				menu_selected = i
 				key_cooldown = KEY_COOLDOWN
 			}
@@ -201,7 +198,9 @@ ui_loop :: proc(ui: ^Ui, start_offset: int = 0) -> int {
 				slot_selected -= 1
 				key_cooldown = KEY_COOLDOWN
 			}
-			if input_processed.move_down && key_cooldown == 0 && slot_selected < len(ui.items) - 1 {
+			if input_processed.move_down &&
+			   key_cooldown == 0 &&
+			   slot_selected < len(ui.items) - 1 {
 				slot_selected += 1
 				key_cooldown = KEY_COOLDOWN
 			}
@@ -498,7 +497,10 @@ app_loop_restart :: proc() {
 		}
 	}
 
-	time_text := fmt.ctprintf("Time: %0d:%02d", seconds_to_duration(game.stopwatch_stop - game.stopwatch_start))
+	time_text := fmt.ctprintf(
+		"Time: %0d:%02d",
+		seconds_to_duration(game.stopwatch_stop - game.stopwatch_start),
+	)
 	center_print(time_text, title_text_pos.y + 120, 30, 1)
 
 	if !game.is_in_mission {
@@ -509,13 +511,10 @@ app_loop_restart :: proc() {
 	EndDrawing()
 }
 
-center_print :: proc (str: cstring, ypos: f32, font_size: f32, font_spacing: f32) {
+center_print :: proc(str: cstring, ypos: f32, font_size: f32, font_spacing: f32) {
 	using raylib
 	measure_text_size := MeasureTextEx(default_font, str, font_size, font_spacing)
 	pos := Vector2{f32(GetScreenWidth() / 2), f32(GetScreenHeight() / 2)}
-	text_pos := Vector2 {
-		math.floor(f32(pos.x - 0.5 * measure_text_size.x)),
-		ypos,
-	}
+	text_pos := Vector2{math.floor(f32(pos.x - 0.5 * measure_text_size.x)), ypos}
 	DrawTextEx(default_font, str, text_pos, font_size, font_spacing, WHITE)
 }
